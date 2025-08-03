@@ -29,6 +29,7 @@ brew "uv"
 
 # javascripts
 brew "node"
+brew "pnpm"
 
 # neovim
 brew "luarocks"
