@@ -1,0 +1,5 @@
+# background = 1c1e20
+theme = Catppuccin Mocha
+background = 1a1a1a
+macos-titlebar-proxy-icon = hidden
+keybind = shift+enter=text:\n
