@@ -19,16 +19,12 @@ keys() {
 }
 
 # --- Aliases ---
-alias gelv="source ~/local/resources/gel_dev/gelv/bin/activate"
 alias pyv="source .venv/bin/activate"
-alias proj="cd ~/local/projects"
-alias res="cd ~/local/resources"
 alias cdf='cd "$(fd --type d --hidden --exclude Library --exclude Applications . | fzf)"'
 alias ef='fd --type f --hidden --exclude Library --exclude Applications . | fzf | xargs nvim'
 
 # --- Prompt ---
-setopt PROMPT_SUBST
-PS1='%F{#89b4fa}%n@%m%f:%F{#cdd6f4}%~%f %F{#f5e0dc}$ %f'
+PS1="%F{#89b4fa}%n@%m%f:%F{#cdd6f4}%~%f %F{#f5e0dc}$ %f"
 
 # --- Plugins ---
 source "$DOTFILES/zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh"
@@ -37,3 +33,6 @@ source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # --- Homebrew ---
 export HOMEBREW_BUNDLE_FILE="$HOME/.config/Brewfile"
+
+eval "$(fnm env --use-on-cd --shell zsh)"
+
