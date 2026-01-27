@@ -1,8 +1,8 @@
 # macOS
 .DS_Store
 
-# Backup files created by install.sh are local only
-*.backup.*
+# Backups created by install.sh
+backups/
 
 # Editor swap files
 *.swp
