@@ -6,16 +6,26 @@ DOTFILES="$(dirname "$(readlink ~/.zshrc 2>/dev/null || echo ~/.zshrc)")"
 # Keys stored as "$MACHINE_PREFIX/KEY_NAME" in macOS Keychain
 MACHINE_PREFIX=$(cat ~/.dotfiles-machine 2>/dev/null || echo "default")
 
-key-add() { security add-generic-password -a "$USER" -s "$MACHINE_PREFIX/$1" -w -U; }
-key-get() { security find-generic-password -a "$USER" -s "$MACHINE_PREFIX/$1" -w 2>/dev/null; }
-key-del() { security delete-generic-password -a "$USER" -s "$MACHINE_PREFIX/$1"; }
+key-add() {
+    [[ -z "$1" ]] && echo "Usage: key-add KEY_NAME" && return 1
+    security add-generic-password -a "$USER" -s "$MACHINE_PREFIX/$1" -U -w
+}
+key-get() {
+    [[ -z "$1" ]] && echo "Usage: key-get KEY_NAME" && return 1
+    security find-generic-password -a "$USER" -s "$MACHINE_PREFIX/$1" -w 2>/dev/null
+}
+key-del() {
+    [[ -z "$1" ]] && echo "Usage: key-del KEY_NAME" && return 1
+    security delete-generic-password -a "$USER" -s "$MACHINE_PREFIX/$1"
+}
 key-list() { security dump-keychain 2>/dev/null | grep "svce.*\"$MACHINE_PREFIX/" | sed "s/.*\"$MACHINE_PREFIX\///;s/\"$//" | sort -u; }
 
 keys() {
-    export OPENAI_API_KEY=$(key-get OPENAI_API_KEY)
-    export ANTHROPIC_API_KEY=$(key-get ANTHROPIC_API_KEY)
-    # Add more as needed
-    echo "Loaded keys ($MACHINE_PREFIX)"
+    local key_name
+    for key_name in $(key-list); do
+        export "$key_name"="$(key-get "$key_name")"
+    done
+    echo "Loaded $(key-list | wc -l | tr -d ' ') keys ($MACHINE_PREFIX)"
 }
 
 # --- Aliases ---
