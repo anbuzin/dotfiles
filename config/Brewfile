@@ -1,6 +1,7 @@
 # terminal
 brew "fd"
 brew "fzf"
+brew "tree"
 brew "tmux"
 brew "wget"
 brew "zsh-autosuggestions"
