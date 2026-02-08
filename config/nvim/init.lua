@@ -47,7 +47,7 @@ vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 50
 
 -- Remaps
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "Explore" })
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Explore" })
 
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Go [d]own half a page and center" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Go [u]p half a page and center" })
@@ -141,6 +141,13 @@ require("lazy").setup({
             init = function()
                 vim.cmd.colorscheme('catppuccin')
             end
+        },
+        {
+            'stevearc/oil.nvim',
+            ---@module 'oil'
+            ---@type oil.SetupOpts
+            opts = {},
+            lazy = false,
         },
     },
     -- colorscheme that will be used when installing plugins.
