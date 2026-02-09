@@ -139,7 +139,7 @@ require("lazy").setup({
                 },
             },
             init = function()
-                vim.cmd.colorscheme('catppuccin')
+                vim.cmd.colorscheme("catppuccin")
             end
         },
         {
