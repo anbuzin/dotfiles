@@ -62,9 +62,6 @@ vim.keymap.set({ "n", "v", "x" }, "<leader>y", [["+y]], { desc = "Yank selected 
 
 vim.keymap.set("n", "Q", "<nop>", { desc = "Don't go there" })
 
-vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
-    { desc = "Replace all occurrences" })
-
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = "Clear highlights" })
 
 vim.keymap.set("n", '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic error' })
@@ -150,19 +147,16 @@ require("lazy").setup({
             lazy = false,
         },
         {
-            "nvim-neo-tree/neo-tree.nvim",
-            branch = "v3.x",
-            dependencies = {
-                "nvim-lua/plenary.nvim",
-                "MunifTanjim/nui.nvim",
-            },
+            "folke/which-key.nvim",
+            event = "VeryLazy",
+            opts = {},
             keys = {
-                { "<leader>tt", "<cmd>Neotree toggle float<cr>", desc = "[T]oggle [T]ree" },
-            },
-            opts = {
-                popup_border_style = "rounded",
-                window = {
-                    position = "float",
+                {
+                    "<leader>?",
+                    function()
+                        require("which-key").show({ global = false })
+                    end,
+                    desc = "Buffer Local Keymaps (which-key)",
                 },
             },
         },
