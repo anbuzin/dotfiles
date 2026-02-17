@@ -39,3 +39,4 @@ brew "gnutls"
 brew "rust"
 brew "utf8proc"
 
+brew "temporal"
