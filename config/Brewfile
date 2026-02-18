@@ -13,7 +13,6 @@ brew "uv"
 
 # javascripts
 brew "fnm"
-brew "corepack"
 brew "vercel-cli"
 
 # neovim
