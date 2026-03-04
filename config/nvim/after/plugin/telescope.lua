@@ -116,7 +116,7 @@ local function find_files(opts)
             map({ 'i', 'n' }, '<C-a>', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                find_files({ cwd = cwd, hidden = true, use_ignore = false, prompt = prompt })
+                find_files({ cwd = cwd, hidden = true, use_ignore = not use_ignore, prompt = prompt })
             end)
 
             -- <C-g>: jump to git project root
@@ -130,7 +130,14 @@ local function find_files(opts)
             map('n', '-', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                find_files({ cwd = vim.fn.fnamemodify(cwd, ':h'), hidden = hidden, use_ignore = use_ignore, prompt = prompt, initial_mode = 'normal' })
+                find_files({
+                    cwd = vim.fn.fnamemodify(cwd, ':h'),
+                    hidden = hidden,
+                    use_ignore = use_ignore,
+                    prompt =
+                        prompt,
+                    initial_mode = 'normal'
+                })
             end)
 
             return true
@@ -174,7 +181,7 @@ local function live_grep(opts)
             map({ 'i', 'n' }, '<C-a>', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                live_grep({ cwd = cwd, hidden = true, use_ignore = false, prompt = prompt })
+                live_grep({ cwd = cwd, hidden = true, use_ignore = not use_ignore, prompt = prompt })
             end)
 
             -- <C-g>: jump to git project root
@@ -188,7 +195,14 @@ local function live_grep(opts)
             map('n', '-', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                live_grep({ cwd = vim.fn.fnamemodify(cwd, ':h'), hidden = hidden, use_ignore = use_ignore, prompt = prompt, initial_mode = 'normal' })
+                live_grep({
+                    cwd = vim.fn.fnamemodify(cwd, ':h'),
+                    hidden = hidden,
+                    use_ignore = use_ignore,
+                    prompt =
+                        prompt,
+                    initial_mode = 'normal'
+                })
             end)
 
             return true
