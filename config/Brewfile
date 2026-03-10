@@ -36,6 +36,7 @@ brew "cmake"
 brew "ffmpeg"
 brew "gnutls"
 brew "rust"
+brew "go"
 brew "utf8proc"
 
 brew "temporal"
