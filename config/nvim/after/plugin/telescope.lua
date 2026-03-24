@@ -20,7 +20,7 @@
 -- In-picker controls:
 --   <C-h>  toggle hidden/dotfiles (ignore list still applies)
 --   <C-a>  show ALL files (hidden + ignore list off)
---   <C-g>  jump to git project root
+--   <C-g>  search relative to current file
 --   -      go up one directory (normal mode)
 
 -- Excluded from search even when hidden files are shown.
@@ -86,7 +86,7 @@ end
 -- `opts.use_ignore` — apply ignore_patterns (default true)
 local function find_files(opts)
     opts = opts or {}
-    local cwd = opts.cwd or get_current_dir()
+    local cwd = opts.cwd or get_project_root()
     local hidden = opts.hidden or false
     local use_ignore = opts.use_ignore ~= false -- default true
 
@@ -119,11 +119,11 @@ local function find_files(opts)
                 find_files({ cwd = cwd, hidden = true, use_ignore = not use_ignore, prompt = prompt })
             end)
 
-            -- <C-g>: jump to git project root
+            -- <C-g>: search relative to current file
             map({ 'i', 'n' }, '<C-g>', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                find_files({ cwd = get_project_root(), hidden = hidden, use_ignore = use_ignore, prompt = prompt })
+                find_files({ cwd = get_current_dir(), hidden = hidden, use_ignore = use_ignore, prompt = prompt })
             end)
 
             -- - (normal mode): go up one directory, stay in normal mode
@@ -149,7 +149,7 @@ end
 -- Reusable live_grep with directory navigation and hidden/ignore toggles.
 local function live_grep(opts)
     opts = opts or {}
-    local cwd = opts.cwd or get_current_dir()
+    local cwd = opts.cwd or get_project_root()
     local hidden = opts.hidden or false
     local use_ignore = opts.use_ignore ~= false -- default true
 
@@ -184,11 +184,11 @@ local function live_grep(opts)
                 live_grep({ cwd = cwd, hidden = true, use_ignore = not use_ignore, prompt = prompt })
             end)
 
-            -- <C-g>: jump to git project root
+            -- <C-g>: search relative to current file
             map({ 'i', 'n' }, '<C-g>', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                live_grep({ cwd = get_project_root(), hidden = hidden, use_ignore = use_ignore, prompt = prompt })
+                live_grep({ cwd = get_current_dir(), hidden = hidden, use_ignore = use_ignore, prompt = prompt })
             end)
 
             -- - (normal mode): go up one directory, stay in normal mode
