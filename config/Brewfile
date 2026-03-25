@@ -13,7 +13,8 @@ brew "uv"
 
 # javascripts
 brew "fnm"
-brew "vercel-cli"
+tap "oven-sh/bun"
+brew "oven-sh/bun/bun"
 
 # neovim
 brew "luarocks"
@@ -35,7 +36,6 @@ brew "anomalyco/tap/opencode"
 brew "cmake"
 brew "ffmpeg"
 brew "gnutls"
-brew "rust"
 brew "go"
 brew "utf8proc"
 
