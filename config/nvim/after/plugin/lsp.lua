@@ -1,13 +1,6 @@
--- Add cmp_nvim_lsp capabilities settings to lspconfig
--- This should be executed before you configure any language server
-
-local lspconfig_defaults = require("lspconfig").util.default_config
-
-lspconfig_defaults.capabilities = vim.tbl_deep_extend(
-    'force',
-    lspconfig_defaults.capabilities,
-    require('cmp_nvim_lsp').default_capabilities()
-)
+-- LSP configuration for Neovim 0.12+
+-- Uses native vim.lsp.config + vim.lsp.enable pattern
+-- Completion is handled by built-in autocomplete (vim.o.autocomplete)
 
 -- This is where you enable features that only work
 -- if there is a language server active in the file
@@ -57,6 +50,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
         -- map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
         map('<leader>ff', vim.lsp.buf.format, '[F]ormat [F]ile')
+
+        -- Neovim 0.12 built-in LSP keybindings (provided by default):
+        --   gra  -> code actions
+        --   gri  -> implementations
+        --   grn  -> rename
+        --   grr  -> references
+        --   grt  -> type definition
+        --   grx  -> run codelens
+        --   gO   -> document symbols
+        --   <C-S> (insert) -> signature help
     end,
 })
 
@@ -92,40 +95,3 @@ vim.lsp.config("sourcekit", {
 })
 
 -- vim.lsp.config("jedi_language_server", {})
-
-local cmp = require('cmp')
-
-cmp.setup({
-    sources = {
-        -- { name = 'copilot' },
-        { name = 'nvim_lsp' },
-    },
-    snippet = {
-        expand = function(args)
-            -- You need Neovim v0.10 to use vim.snippet
-            vim.snippet.expand(args.body)
-        end,
-    },
-    mapping = cmp.mapping.preset.insert({
-        -- Select the [n]ext item
-        ['<C-n>'] = cmp.mapping.select_next_item(),
-        -- Select the [p]revious item
-        ['<C-p>'] = cmp.mapping.select_prev_item(),
-
-        -- Scroll the documentation window [b]ack / [f]orward
-        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-f>'] = cmp.mapping.scroll_docs(4),
-
-        -- Accept ([y]es) the completion.
-        --  This will auto-import if your LSP supports it.
-        --  This will expand snippets if the LSP sent a snippet.
-        ['<C-y>'] = cmp.mapping.confirm { select = true },
-
-        -- If you prefer more traditional completion keymaps,
-        -- you can uncomment the following lines
-        --['<CR>'] = cmp.mapping.confirm { select = true },
-        --['<Tab>'] = cmp.mapping.select_next_item(),
-        --['<S-Tab>'] = cmp.mapping.select_prev_item(),
-
-    }),
-})
