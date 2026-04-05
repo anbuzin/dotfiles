@@ -1,4 +1,3 @@
--- <C-x-o> -- vanilla complete
 vim.loader.enable()
 
 vim.g.mapleader = " "
@@ -6,10 +5,12 @@ vim.g.maplocalleader = " "
 
 vim.g.have_nerd_font = true
 
--- Options
-
 vim.opt.showmode = false
-vim.opt.mouse = "a"
+
+-- these should be superceded by defaults
+-- vim.opt.mouse = "a"
+-- vim.opt.incsearch = true
+-- vim.opt.termguicolors = true
 
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -32,13 +33,10 @@ vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 
 -- vim.opt.hlsearch = false
-vim.opt.incsearch = true
 
 vim.opt.inccommand = 'split' -- Preview substitutions live, as you type!
 
 vim.opt.cursorline = true    -- Show which line your cursor is on
-
-vim.opt.termguicolors = true
 
 vim.opt.scrolloff = 10
 vim.opt.signcolumn = "yes"
@@ -46,12 +44,30 @@ vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50
 
--- Native autocompletion (Neovim 0.12+)
+-- native autocompletion 
 vim.o.autocomplete = true
 -- vim.o.completeopt = 'menu,menuone,noselect,nearest'
 -- vim.o.pumborder = 'rounded'
 
--- Remaps
+-- diagnostics
+vim.diagnostic.config({
+    severity_sort = true,
+    float = {
+        -- border = 'rounded',
+        source = true,
+    },
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = 'E',
+            [vim.diagnostic.severity.WARN]  = 'W',
+            [vim.diagnostic.severity.INFO]  = 'I',
+            [vim.diagnostic.severity.HINT]  = 'H',
+        },
+    },
+})
+
+
+-- keymaps
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Explore" })
 
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Go [d]own half a page and center" })
@@ -65,13 +81,14 @@ vim.keymap.set("v", "<leader>p", "\"_dhp", { desc = "Paste without overriding ya
 vim.keymap.set({ "n", "v", "x" }, "<leader>d", "\"_d", { desc = "Delete without overriding yank buffer" })
 vim.keymap.set({ "n", "v", "x" }, "<leader>y", [["+y]], { desc = "Yank selected to clipboard register" })
 
-vim.keymap.set("n", "Q", "<nop>", { desc = "Don't go there" })
+-- vim.keymap.set("n", "Q", "<nop>", { desc = "Don't go there" })
 
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = "Clear highlights" })
 
 vim.keymap.set("n", '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic error' })
 
--- Highlight when yanking (copying) text
+
+-- blink when yanking text for visual feedback
 vim.api.nvim_create_autocmd('TextYankPost', {
     desc = 'Highlight when yanking (copying) text',
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
@@ -80,10 +97,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     end,
 })
 
--- Built-in plugins (Neovim 0.12+)
+-- built-in
 vim.cmd.packadd('nvim.undotree')
 
--- Plugin hooks (must be defined before vim.pack.add)
+-- hooks
 vim.api.nvim_create_autocmd('PackChanged', {
     callback = function(ev)
         local name, kind = ev.data.spec.name, ev.data.kind
@@ -91,7 +108,6 @@ vim.api.nvim_create_autocmd('PackChanged', {
             if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
             vim.cmd('TSUpdate')
         end
-        -- Rebuild telescope-fzf-native on install/update
         if name == 'telescope-fzf-native.nvim' and (kind == 'install' or kind == 'update') then
             local path = vim.fn.stdpath('data') .. '/site/pack/core/opt/telescope-fzf-native.nvim'
             vim.system({ 'make' }, { cwd = path })
@@ -99,7 +115,7 @@ vim.api.nvim_create_autocmd('PackChanged', {
     end,
 })
 
--- Install and load plugins via vim.pack (Neovim 0.12+)
+-- plugins
 vim.pack.add({
     -- Theme
     { src = 'https://github.com/catppuccin/nvim', name = 'catppuccin' },
@@ -129,7 +145,7 @@ vim.pack.add({
     'https://github.com/folke/which-key.nvim',
 })
 
--- Theme setup (must happen right after plugins are loaded)
+
 require("catppuccin").setup({
     flavour = "mocha",
     transparent_background = true,
@@ -139,11 +155,284 @@ require("catppuccin").setup({
 })
 vim.cmd.colorscheme("catppuccin-nvim")
 
--- Which-key setup
+require('nvim-treesitter').setup {}
+
+require('nvim-treesitter').install {
+    "c", "lua", "vim", "vimdoc", "query",
+    "markdown", "markdown_inline",
+    "cuda", "javascript", "typescript", "tsx", "jsdoc",
+    "cpp", "python", "rust",
+    "json", "yaml", "toml", "html", "css",
+}
+
+-- treesitter highlighting for all filetypes that have a parser
+vim.api.nvim_create_autocmd('FileType', {
+    callback = function()
+        pcall(vim.treesitter.start)
+    end,
+})
+
+require("oil").setup({
+    view_options = {
+        show_hidden = true,
+    }
+})
+
+require("gitsigns").setup({})
+
 require("which-key").setup({})
+
 vim.keymap.set("n", "<leader>?", function()
     require("which-key").show({ global = false })
 end, { desc = "Buffer Local Keymaps (which-key)" })
 
--- Gitsigns setup
-require("gitsigns").setup({})
+-- Telescope setup
+-- In-picker controls:
+--   <C-h>  toggle hidden/dotfiles (ignore list still applies)
+--   <C-a>  show ALL files (hidden + ignore list off)
+--   <C-g>  search relative to current file
+--   -      go up one directory (normal mode)
+
+-- Excluded from search even when hidden files are shown.
+-- Only bypassed by <C-a> (show all).
+local ignore_patterns = {
+    '.git',
+    '.mypy_cache',
+    '.venv',
+    '.ruff_cache',
+    '.pytest_cache',
+    '.vercel',
+    '__pycache__',
+    'node_modules',
+}
+
+local function ignore_globs(use_ignore)
+    if use_ignore == false then return {} end
+    local args = {}
+    for _, pat in ipairs(ignore_patterns) do
+        table.insert(args, '--glob')
+        table.insert(args, '!**/' .. pat .. '/*')
+    end
+    return args
+end
+
+require('telescope').setup {
+    extensions = {
+        ['ui-select'] = {
+            require('telescope.themes').get_dropdown(),
+        },
+    },
+}
+
+pcall(require('telescope').load_extension, 'fzf')
+pcall(require('telescope').load_extension, 'ui-select')
+
+local function get_current_dir()
+    local ok, oil = pcall(require, 'oil')
+    if ok and oil.get_current_dir then
+        local dir = oil.get_current_dir()
+        if dir then return dir end
+    end
+    return vim.fn.expand('%:p:h')
+end
+
+local function get_project_root()
+    local dot_git = vim.fn.finddir('.git', '.;')
+    if dot_git ~= '' then
+        return vim.fn.fnamemodify(dot_git, ':h')
+    end
+    return vim.fn.getcwd()
+end
+
+local function find_files(opts)
+    opts = opts or {}
+    local cwd = opts.cwd or get_project_root()
+    local hidden = opts.hidden or false
+    local use_ignore = opts.use_ignore ~= false
+
+    local find_command = nil
+    if hidden then
+        find_command = { 'rg', '--files', '--hidden', '--no-ignore' }
+        vim.list_extend(find_command, ignore_globs(use_ignore))
+    end
+
+    require('telescope.builtin').find_files({
+        cwd = cwd,
+        hidden = hidden,
+        no_ignore = hidden,
+        find_command = find_command,
+        initial_mode = opts.initial_mode or 'insert',
+        attach_mappings = function(prompt_bufnr, map)
+            local action_state = require('telescope.actions.state')
+
+            map({ 'i', 'n' }, '<C-h>', function()
+                local prompt = action_state.get_current_line()
+                require('telescope.actions').close(prompt_bufnr)
+                find_files({ cwd = cwd, hidden = not hidden, use_ignore = true, prompt = prompt })
+            end)
+
+            map({ 'i', 'n' }, '<C-a>', function()
+                local prompt = action_state.get_current_line()
+                require('telescope.actions').close(prompt_bufnr)
+                find_files({ cwd = cwd, hidden = true, use_ignore = not use_ignore, prompt = prompt })
+            end)
+
+            map({ 'i', 'n' }, '<C-g>', function()
+                local prompt = action_state.get_current_line()
+                require('telescope.actions').close(prompt_bufnr)
+                find_files({ cwd = get_current_dir(), hidden = hidden, use_ignore = use_ignore, prompt = prompt })
+            end)
+
+            map('n', '-', function()
+                local prompt = action_state.get_current_line()
+                require('telescope.actions').close(prompt_bufnr)
+                find_files({
+                    cwd = vim.fn.fnamemodify(cwd, ':h'),
+                    hidden = hidden,
+                    use_ignore = use_ignore,
+                    prompt = prompt,
+                    initial_mode = 'normal'
+                })
+            end)
+
+            return true
+        end,
+        default_text = opts.prompt or '',
+    })
+end
+
+local function live_grep(opts)
+    opts = opts or {}
+    local cwd = opts.cwd or get_project_root()
+    local hidden = opts.hidden or false
+    local use_ignore = opts.use_ignore ~= false
+
+    local vimgrep_arguments = {
+        'rg', '--color=never', '--no-heading', '--with-filename',
+        '--line-number', '--column', '--smart-case',
+    }
+    if hidden then
+        table.insert(vimgrep_arguments, '--hidden')
+        table.insert(vimgrep_arguments, '--no-ignore')
+        vim.list_extend(vimgrep_arguments, ignore_globs(use_ignore))
+    end
+
+    require('telescope.builtin').live_grep({
+        cwd = cwd,
+        vimgrep_arguments = vimgrep_arguments,
+        initial_mode = opts.initial_mode or 'insert',
+        attach_mappings = function(prompt_bufnr, map)
+            local action_state = require('telescope.actions.state')
+
+            map({ 'i', 'n' }, '<C-h>', function()
+                local prompt = action_state.get_current_line()
+                require('telescope.actions').close(prompt_bufnr)
+                live_grep({ cwd = cwd, hidden = not hidden, use_ignore = true, prompt = prompt })
+            end)
+
+            map({ 'i', 'n' }, '<C-a>', function()
+                local prompt = action_state.get_current_line()
+                require('telescope.actions').close(prompt_bufnr)
+                live_grep({ cwd = cwd, hidden = true, use_ignore = not use_ignore, prompt = prompt })
+            end)
+
+            map({ 'i', 'n' }, '<C-g>', function()
+                local prompt = action_state.get_current_line()
+                require('telescope.actions').close(prompt_bufnr)
+                live_grep({ cwd = get_current_dir(), hidden = hidden, use_ignore = use_ignore, prompt = prompt })
+            end)
+
+            map('n', '-', function()
+                local prompt = action_state.get_current_line()
+                require('telescope.actions').close(prompt_bufnr)
+                live_grep({
+                    cwd = vim.fn.fnamemodify(cwd, ':h'),
+                    hidden = hidden,
+                    use_ignore = use_ignore,
+                    prompt = prompt,
+                    initial_mode = 'normal'
+                })
+            end)
+
+            return true
+        end,
+        default_text = opts.prompt or '',
+    })
+end
+
+local builtin = require 'telescope.builtin'
+vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
+vim.keymap.set('n', '<leader>sf', function() find_files() end, { desc = '[S]earch [F]iles' })
+-- vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
+-- vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+vim.keymap.set('n', '<leader>sg', function() live_grep() end, { desc = '[S]earch by [G]rep' })
+vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+-- vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+-- vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+vim.keymap.set('n', '<leader>si', function()
+    find_files({ hidden = true })
+end, { desc = "[S]earch files, including [I]gnored" })
+
+vim.keymap.set('n', '<leader>sn', function()
+    find_files({ cwd = vim.fn.stdpath 'config' })
+end, { desc = '[S]earch [N]eovim files' })
+
+-- LSP setup
+vim.api.nvim_create_autocmd('LspAttach', {
+    desc = 'LSP actions',
+    callback = function(event)
+        local map = function(keys, func, desc, mode)
+            mode = mode or 'n'
+            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+        end
+
+        -- Overrides for Telescope-based navigation (instead of built-in quickfix):
+        map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+        map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+
+        map('<leader>ff', vim.lsp.buf.format, '[F]ormat [F]ile')
+
+        --   gra  -> code actions
+        --   gri  -> implementations
+        --   grn  -> rename
+        --   grr  -> references
+        --   grt  -> type definition
+        --   grx  -> run codelens
+        --   gO   -> document symbols
+        --   <C-S> (insert) -> signature help
+    end,
+})
+
+-- Mason
+require('mason').setup({})
+require('mason-lspconfig').setup({
+    ensure_installed = {
+        "lua_ls", "ts_ls", "eslint", "clangd",
+        "ruff", "basedpyright", "rust_analyzer",
+    },
+    handlers = {
+        function(server_name)
+            vim.lsp.config(server_name, {})
+        end,
+        clangd = function()
+            vim.lsp.config('clangd', {
+                cmd = { "clangd", "--fallback-style=webkit" },
+            })
+        end,
+    },
+})
+
+-- sourcekit (Swift) ships with Xcode, not managed by Mason
+vim.lsp.config("sourcekit", {
+    capabilities = {
+        workspace = {
+            didChangeWatchedFiles = {
+                dynamicRegistration = true,
+            },
+        },
+    },
+})
+

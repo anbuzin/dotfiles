@@ -20,6 +20,8 @@ brew "oven-sh/bun/bun"
 brew "luarocks"
 brew "neovim"
 brew "ripgrep"
+brew "tree-sitter"
+brew "tree-sitter-cli"
 
 # devtools
 brew "gh"
