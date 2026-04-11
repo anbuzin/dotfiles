@@ -31,6 +31,7 @@ brew "gnupg"
 cask "1password-cli"
 cask "ungoogled-chromium"
 cask "claude-code"
+cask "codex"
 
 tap "anomalyco/tap"
 brew "anomalyco/tap/opencode"

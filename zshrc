@@ -28,7 +28,12 @@ keys() {
     echo "Loaded $(key-list | wc -l | tr -d ' ') keys ($MACHINE_PREFIX)"
 }
 
+# --- Editor ---
+export EDITOR="nvim"
+export VISUAL="nvim"
+
 # --- Aliases ---
+alias vim="nvim"
 alias pyv="source .venv/bin/activate"
 alias cdf='cd "$(fd --type d --hidden --exclude Library --exclude Applications . | fzf)"'
 alias ef='fd --type f --hidden --exclude Library --exclude Applications . | fzf | xargs nvim'
@@ -46,3 +51,4 @@ export HOMEBREW_BUNDLE_FILE="$HOME/.config/Brewfile"
 
 eval "$(fnm env --use-on-cd --shell zsh)"
 
+keys
