@@ -44,7 +44,7 @@ vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50
 
--- native autocompletion 
+-- native autocompletion
 vim.o.autocomplete = true
 -- vim.o.completeopt = 'menu,menuone,noselect,nearest'
 -- vim.o.pumborder = 'rounded'
@@ -188,14 +188,13 @@ end, { desc = "Buffer Local Keymaps (which-key)" })
 
 -- Telescope setup
 -- In-picker controls:
---   <C-h>  toggle hidden/dotfiles (ignore list still applies)
---   <C-a>  show ALL files (hidden + ignore list off)
---   <C-g>  search relative to current file
+--   <C-h>  toggle hidden/dotfiles (but not turd directories)
+--   <C-f>  toggle show full (including turd directores)
+--   <C-g>  toggle between project root and current file directory
 --   -      go up one directory (normal mode)
 
--- Excluded from search even when hidden files are shown.
--- Only bypassed by <C-a> (show all).
-local ignore_patterns = {
+-- List of turd directories
+local exclude_patterns = {
     '.git',
     '.mypy_cache',
     '.venv',
@@ -206,10 +205,10 @@ local ignore_patterns = {
     'node_modules',
 }
 
-local function ignore_globs(use_ignore)
-    if use_ignore == false then return {} end
+local function build_exclude_globs(show_full)
+    if show_full then return {} end
     local args = {}
-    for _, pat in ipairs(ignore_patterns) do
+    for _, pat in ipairs(exclude_patterns) do
         table.insert(args, '--glob')
         table.insert(args, '!**/' .. pat .. '/*')
     end
@@ -247,19 +246,17 @@ end
 local function find_files(opts)
     opts = opts or {}
     local cwd = opts.cwd or get_project_root()
-    local hidden = opts.hidden or false
-    local use_ignore = opts.use_ignore ~= false
+    local show_hidden = opts.show_hidden or false
+    local show_full = opts.show_full or false
 
     local find_command = nil
-    if hidden then
+    if show_hidden or show_full then
         find_command = { 'rg', '--files', '--hidden', '--no-ignore' }
-        vim.list_extend(find_command, ignore_globs(use_ignore))
+        vim.list_extend(find_command, build_exclude_globs(show_full))
     end
 
     require('telescope.builtin').find_files({
         cwd = cwd,
-        hidden = hidden,
-        no_ignore = hidden,
         find_command = find_command,
         initial_mode = opts.initial_mode or 'insert',
         attach_mappings = function(prompt_bufnr, map)
@@ -268,32 +265,38 @@ local function find_files(opts)
             map({ 'i', 'n' }, '<C-h>', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                find_files({ cwd = cwd, hidden = not hidden, use_ignore = true, prompt = prompt })
-            end)
+                find_files({ cwd = cwd, show_hidden = not show_hidden, show_full = show_full, prompt = prompt })
+            end, { desc = 'Toggle [H]idden' })
 
-            map({ 'i', 'n' }, '<C-a>', function()
+            map({ 'i', 'n' }, '<C-f>', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                find_files({ cwd = cwd, hidden = true, use_ignore = not use_ignore, prompt = prompt })
-            end)
+                find_files({ cwd = cwd, show_hidden = show_hidden, show_full = not show_full, prompt = prompt })
+            end, { desc = 'Toggle [F]ull (including turds)' })
 
             map({ 'i', 'n' }, '<C-g>', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                find_files({ cwd = get_current_dir(), hidden = hidden, use_ignore = use_ignore, prompt = prompt })
-            end)
+                local new_cwd
+                if cwd == get_project_root() then
+                    new_cwd = get_current_dir()
+                else
+                    new_cwd = get_project_root()
+                end
+                find_files({ cwd = new_cwd, show_hidden = show_hidden, show_full = show_full, prompt = prompt })
+            end, { desc = 'Toggle local / [G]it root search' })
 
             map('n', '-', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
                 find_files({
                     cwd = vim.fn.fnamemodify(cwd, ':h'),
-                    hidden = hidden,
-                    use_ignore = use_ignore,
+                    show_hidden = show_hidden,
+                    show_full = show_full,
                     prompt = prompt,
                     initial_mode = 'normal'
                 })
-            end)
+            end, { desc = 'Go up one directory' })
 
             return true
         end,
@@ -304,17 +307,17 @@ end
 local function live_grep(opts)
     opts = opts or {}
     local cwd = opts.cwd or get_project_root()
-    local hidden = opts.hidden or false
-    local use_ignore = opts.use_ignore ~= false
+    local show_hidden = opts.show_hidden or false
+    local show_full = opts.show_full or false
 
     local vimgrep_arguments = {
         'rg', '--color=never', '--no-heading', '--with-filename',
         '--line-number', '--column', '--smart-case',
     }
-    if hidden then
+    if show_hidden or show_full then
         table.insert(vimgrep_arguments, '--hidden')
         table.insert(vimgrep_arguments, '--no-ignore')
-        vim.list_extend(vimgrep_arguments, ignore_globs(use_ignore))
+        vim.list_extend(vimgrep_arguments, build_exclude_globs(show_full))
     end
 
     require('telescope.builtin').live_grep({
@@ -327,32 +330,38 @@ local function live_grep(opts)
             map({ 'i', 'n' }, '<C-h>', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                live_grep({ cwd = cwd, hidden = not hidden, use_ignore = true, prompt = prompt })
-            end)
+                live_grep({ cwd = cwd, show_hidden = not show_hidden, show_full = show_full, prompt = prompt })
+            end, { desc = 'Toggle hidden/dotfiles' })
 
-            map({ 'i', 'n' }, '<C-a>', function()
+            map({ 'i', 'n' }, '<C-f>', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                live_grep({ cwd = cwd, hidden = true, use_ignore = not use_ignore, prompt = prompt })
-            end)
+                live_grep({ cwd = cwd, show_hidden = show_hidden, show_full = not show_full, prompt = prompt })
+            end, { desc = 'Toggle show full (bypass exclude list)' })
 
             map({ 'i', 'n' }, '<C-g>', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
-                live_grep({ cwd = get_current_dir(), hidden = hidden, use_ignore = use_ignore, prompt = prompt })
-            end)
+                local new_cwd
+                if cwd == get_project_root() then
+                    new_cwd = get_current_dir()
+                else
+                    new_cwd = get_project_root()
+                end
+                live_grep({ cwd = new_cwd, show_hidden = show_hidden, show_full = show_full, prompt = prompt })
+            end, { desc = 'Toggle local/project directory' })
 
             map('n', '-', function()
                 local prompt = action_state.get_current_line()
                 require('telescope.actions').close(prompt_bufnr)
                 live_grep({
                     cwd = vim.fn.fnamemodify(cwd, ':h'),
-                    hidden = hidden,
-                    use_ignore = use_ignore,
+                    show_hidden = show_hidden,
+                    show_full = show_full,
                     prompt = prompt,
                     initial_mode = 'normal'
                 })
-            end)
+            end, { desc = 'Go up one directory' })
 
             return true
         end,
@@ -361,20 +370,16 @@ local function live_grep(opts)
 end
 
 local builtin = require 'telescope.builtin'
-vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp tags' })
 vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
 vim.keymap.set('n', '<leader>sf', function() find_files() end, { desc = '[S]earch [F]iles' })
 -- vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
 -- vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', function() live_grep() end, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume last picker' })
 -- vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
 -- vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
-vim.keymap.set('n', '<leader>si', function()
-    find_files({ hidden = true })
-end, { desc = "[S]earch files, including [I]gnored" })
 
 vim.keymap.set('n', '<leader>sn', function()
     find_files({ cwd = vim.fn.stdpath 'config' })
@@ -435,4 +440,3 @@ vim.lsp.config("sourcekit", {
         },
     },
 })
-
