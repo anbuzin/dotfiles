@@ -33,6 +33,8 @@ cask "ungoogled-chromium"
 cask "claude-code"
 cask "codex"
 
+cask "secretive"
+
 tap "anomalyco/tap"
 brew "anomalyco/tap/opencode"
 

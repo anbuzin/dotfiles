@@ -52,3 +52,6 @@ export HOMEBREW_BUNDLE_FILE="$HOME/.config/Brewfile"
 eval "$(fnm env --use-on-cd --shell zsh)"
 
 keys
+
+export SSH_AUTH_SOCK="$HOME/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
+

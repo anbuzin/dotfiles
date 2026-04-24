@@ -22,3 +22,8 @@ for dev do alias in `zshrc`:
 alias vc='node ~/path/to/vercel/packages/cli/dist/vc.js'
 ```
 
+for non-dev, do:
+
+```bash
+npm i -g vercel
+```
