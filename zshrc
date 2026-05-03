@@ -8,7 +8,12 @@ MACHINE_PREFIX=$(cat ~/.dotfiles-machine 2>/dev/null || echo "default")
 
 key-add() {
     [[ -z "$1" ]] && echo "Usage: key-add KEY_NAME" && return 1
-    security add-generic-password -a "$USER" -s "$MACHINE_PREFIX/$1" -U -w
+    local val
+    printf "Value for %s/%s: " "$MACHINE_PREFIX" "$1"
+    IFS= read -rs val
+    echo
+    [[ -z "$val" ]] && echo "Empty value, aborting" && return 1
+    security add-generic-password -a "$USER" -s "$MACHINE_PREFIX/$1" -U -w "$val"
 }
 key-get() {
     [[ -z "$1" ]] && echo "Usage: key-get KEY_NAME" && return 1
@@ -50,8 +55,6 @@ source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 export HOMEBREW_BUNDLE_FILE="$HOME/.config/Brewfile"
 
 eval "$(fnm env --use-on-cd --shell zsh)"
-
-keys
 
 export SSH_AUTH_SOCK="$HOME/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
 
