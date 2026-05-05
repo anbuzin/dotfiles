@@ -46,7 +46,8 @@ vim.opt.updatetime = 50
 
 -- native autocompletion
 vim.o.autocomplete = true
--- vim.o.completeopt = 'menu,menuone,noselect,nearest'
+vim.o.complete = '.,w,b,u,t,o'
+vim.o.completeopt = 'menu,menuone,noselect,popup'
 -- vim.o.pumborder = 'rounded'
 
 -- diagnostics
@@ -389,6 +390,11 @@ end, { desc = '[S]earch [N]eovim files' })
 vim.api.nvim_create_autocmd('LspAttach', {
     desc = 'LSP actions',
     callback = function(event)
+        local client = assert(vim.lsp.get_client_by_id(event.data.client_id))
+        if client:supports_method('textDocument/completion') then
+            vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+        end
+
         local map = function(keys, func, desc, mode)
             mode = mode or 'n'
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
