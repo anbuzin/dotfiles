@@ -1,6 +1,5 @@
 # Dotfiles location
-DOTFILES="$(dirname "$(readlink ~/.zshrc 2>/dev/null || echo ~/.zshrc)")"
-[[ "$DOTFILES" == "." ]] && DOTFILES="$HOME/local/resources/dotfiles"
+DOTFILES="$HOME/local/resources/dotfiles"
 
 # --- Keychain API key management ---
 # Keys stored as "$MACHINE_PREFIX/KEY_NAME" in macOS Keychain
