@@ -224,6 +224,13 @@ require('telescope').setup {
     },
 }
 
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'TelescopePrompt',
+    callback = function()
+        vim.opt_local.autocomplete = false
+    end,
+})
+
 pcall(require('telescope').load_extension, 'fzf')
 pcall(require('telescope').load_extension, 'ui-select')
 
