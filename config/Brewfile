@@ -13,7 +13,7 @@ brew "uv"
 
 # javascripts
 brew "fnm"
-tap "oven-sh/bun"
+tap "oven-sh/bun", trusted: true
 brew "oven-sh/bun/bun"
 
 # neovim
@@ -30,12 +30,12 @@ brew "git-lfs"
 brew "gnupg"
 cask "1password-cli"
 cask "ungoogled-chromium"
-cask "claude-code"
+cask "claude-code@latest"
 cask "codex"
 
 cask "secretive"
 
-tap "anomalyco/tap"
+tap "anomalyco/tap", trusted: true
 brew "anomalyco/tap/opencode"
 
 brew "cmake"
