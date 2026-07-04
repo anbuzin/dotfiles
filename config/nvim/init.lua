@@ -166,6 +166,13 @@ require('nvim-treesitter').install {
     "json", "yaml", "toml", "html", "css",
 }
 
+vim.filetype.add({
+    extension = {
+        mdx = "mdx",
+    },
+})
+vim.treesitter.language.register("markdown", "mdx")
+
 -- treesitter highlighting for all filetypes that have a parser
 vim.api.nvim_create_autocmd('FileType', {
     callback = function()
