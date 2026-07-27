@@ -45,3 +45,4 @@ brew "go"
 brew "utf8proc"
 
 brew "temporal"
+brew "vercel"
