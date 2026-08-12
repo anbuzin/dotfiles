@@ -46,6 +46,9 @@ alias ef='fd --type f --hidden --exclude Library --exclude Applications . | fzf 
 source "$DOTFILES/rose-pine-geist/zsh/rose-pine-geist-prompt.zsh"
 PS1="%F{$RPG_PINE}%n@%m%f:%F{$RPG_TEXT}%~%f %F{$RPG_ROSE}$ %f"
 
+# --- fzf colors ---
+source "$DOTFILES/rose-pine-geist/zsh/rose-pine-geist-fzf.zsh"
+
 # --- Plugins ---
 source "$DOTFILES/rose-pine-geist/zsh/rose-pine-geist-highlighting.zsh"
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

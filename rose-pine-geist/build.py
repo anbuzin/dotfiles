@@ -150,6 +150,41 @@ def build_zsh_highlighting(p: dict[str, str]) -> str:
     return "\n".join(lines)
 
 
+# fzf UI role map (fzf's default "dark" theme uses fixed 256-color
+# indices, so it never inherits the terminal palette). bg stays -1
+# (terminal default) so fzf sits on whatever surface it's drawn over.
+FZF_COLORS = [
+    ("fg", "subtle"),
+    ("bg", None),
+    ("hl", "love"),
+    ("fg+", "text"),
+    ("bg+", "highlight_low"),
+    ("hl+", "love"),
+    ("query", "text"),
+    ("border", "pine"),
+    ("prompt", "pine"),
+    ("pointer", "love"),
+    ("marker", "rose"),
+    ("spinner", "rose"),
+    ("header", "muted"),
+    ("info", "muted"),
+    ("separator", "highlight_med"),
+    # gutter is the ▌ bar drawn on EVERY row's left edge (fzf >= 0.74
+    # default); pointer is the same bar on the current row only.
+    ("gutter", "pine"),
+]
+
+
+def build_zsh_fzf(p: dict[str, str]) -> str:
+    pairs = ",".join(f"{k}:{p[role] if role else '-1'}" for k, role in FZF_COLORS)
+    return "\n".join([
+        f"# {HEADER}",
+        "# rose-pine-geist colors for fzf.",
+        f'export FZF_DEFAULT_OPTS="--color={pairs}"',
+        "",
+    ])
+
+
 def build_zsh_prompt(p: dict[str, str]) -> str:
     lines = [
         f"# {HEADER}",
@@ -212,6 +247,7 @@ def main() -> None:
         "ghostty/themes/rose-pine-geist": build_ghostty(palette),
         "zsh/rose-pine-geist-highlighting.zsh": build_zsh_highlighting(palette),
         "zsh/rose-pine-geist-prompt.zsh": build_zsh_prompt(palette),
+        "zsh/rose-pine-geist-fzf.zsh": build_zsh_fzf(palette),
         "obsidian/rose-pine-geist-code.css": build_obsidian(palette),
     }
     for rel, content in targets.items():
