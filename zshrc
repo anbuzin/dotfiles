@@ -43,10 +43,11 @@ alias cdf='cd "$(fd --type d --hidden --exclude Library --exclude Applications .
 alias ef='fd --type f --hidden --exclude Library --exclude Applications . | fzf | xargs nvim'
 
 # --- Prompt ---
-PS1="%F{#89b4fa}%n@%m%f:%F{#cdd6f4}%~%f %F{#f5e0dc}$ %f"
+source "$DOTFILES/rose-pine-geist/zsh/rose-pine-geist-prompt.zsh"
+PS1="%F{$RPG_PINE}%n@%m%f:%F{$RPG_TEXT}%~%f %F{$RPG_ROSE}$ %f"
 
 # --- Plugins ---
-source "$DOTFILES/zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh"
+source "$DOTFILES/rose-pine-geist/zsh/rose-pine-geist-highlighting.zsh"
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 

@@ -120,6 +120,7 @@ vim.api.nvim_create_autocmd('PackChanged', {
 vim.pack.add({
     -- Theme
     { src = 'https://github.com/catppuccin/nvim', name = 'catppuccin' },
+    { src = 'https://github.com/rose-pine/neovim', name = 'rose-pine' },
 
     -- Fuzzy finder
     'https://github.com/nvim-telescope/telescope.nvim',
@@ -147,14 +148,9 @@ vim.pack.add({
 })
 
 
-require("catppuccin").setup({
-    flavour = "mocha",
-    transparent_background = true,
-    float = {
-        transparent = true,
-    },
-})
-vim.cmd.colorscheme("catppuccin-nvim")
+-- rose-pine-geist (from $DOTFILES/rose-pine-geist, symlinked into
+-- ~/.local/share/nvim/site/pack/themes/start/)
+vim.cmd.colorscheme("rose-pine-geist")
 
 require('nvim-treesitter').setup {}
 
