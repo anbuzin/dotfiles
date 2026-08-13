@@ -20,6 +20,13 @@ rose_pine.setup({
 	variant = "main",
 	styles = { transparency = false },
 	palette = { main = require("rose-pine-geist.palette") },
+	highlight_groups = {
+		-- Stock gitcommit syntax links the summary line to Keyword (pine),
+		-- too dim for prose being written (fugitive :Git commit). Rose:
+		-- bright-trio accent unclaimed in that buffer (foam = branch/markers,
+		-- gold = file names); also echoes the cursor color.
+		gitcommitSummary = { fg = "rose" },
+	},
 })
 
 -- Call rose-pine's entry point directly: a nested :colorscheme inside a
