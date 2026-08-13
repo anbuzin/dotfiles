@@ -37,8 +37,9 @@ Superseded neutral ramps (Vesper/Geist mix, Geist-flat) are kept as comment
 blocks in `palette.toml` for A/B flips.
 
 Notes: nvim `Visual` is upstream's iris @ 15% blend (a Rose Pine signature),
-not `highlight_med`; ghostty ANSI 0 = `surface` = true black, standard but
-near-invisible on `base`.
+not `highlight_med`; ghostty ANSI 0 = `overlay` (upstream Rose Pine's role
+for ANSI black) — `surface` receded to true black, which would leave ANSI-0
+panels invisible on `base`.
 
 ## Install
 

@@ -44,9 +44,11 @@ def build_nvim(p: dict[str, str]) -> str:
 
 def build_ghostty(p: dict[str, str]) -> str:
     # ANSI mapping mirrors the Rose Pine theme bundled with Ghostty,
-    # except 0 (black) = surface so it stays distinct from the background.
+    # including 0 (black) = overlay (upstream's role for ANSI black).
+    # NOT surface: surface receded to #000000 in the catppuccin-style
+    # layering, which left ANSI-0 panels invisible on base (1.06:1).
     ansi = [
-        p["surface"], p["love"], p["pine"], p["gold"],
+        p["overlay"], p["love"], p["pine"], p["gold"],
         p["foam"], p["iris"], p["rose"], p["text"],
         p["muted"], p["love"], p["pine"], p["gold"],
         p["foam"], p["iris"], p["rose"], p["text"],

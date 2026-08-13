@@ -1,9 +1,6 @@
-# rose-pine-geist v2 — single source of truth (v1 frozen in palette-v1.toml).
-# v2 change: upper neutral rungs (highlight_low/overlay/highlight_med/
-# highlight_high) tinted toward the text ramp's violet (OKLCH H 290, C 0.010,
-# Geist lightness kept) to stop neutral greys reading yellowish next to the
-# purple-tinted text. Moon-pine experiment tried and reverted: stock pine's
-# dimness quiets the code down — tasteful accent rhythm over uniformity.
+# rose-pine-geist v1 — FROZEN SNAPSHOT (2026-08-13), not read by build.py.
+# Kept for A/B against palette.toml (v2: pine swapped to Rose Pine moon's).
+# To flip back: cp palette-v1.toml palette.toml && uv run build.py
 # Rose Pine accents on a neutral near-black ground.
 #
 # Role names follow upstream Rose Pine (https://rosepinetheme.com/palette/)
@@ -57,21 +54,10 @@ description = "Rose Pine accents on a neutral near-black ground (Vesper/Geist gr
 nc = "#000000"             # Geist background-200 (catppuccin: mantle)
 surface = "#000000"        # Geist background-200 (catppuccin: mantle — floats/statusline darker than editor)
 base = "#0a0a0a"           # Geist background-100 (catppuccin: base)
-# Upper rungs carry a mild rose-pine cast: same OKLCH lightness as the
-# Geist grey noted, hue 290 (matches text ramp), chroma 0.010 (~1/4 of
-# stock rose pine's surface chroma). Kills the yellow-cast illusion that
-# dead-neutral greys get next to violet-tinted text. Ground (nc/surface/
-# base) stays exact Geist — tint is imperceptible below ~L 0.15.
-# C 0.010 (mild — beat neutral, but whisper below beat it; kept for A/B):
-# highlight_low = "#1a191e"  # Geist gray-100 tinted (was #1a1a1a)
-# overlay = "#1f1e24"        # Geist gray-200 tinted (was #1f1f1f)
-# highlight_med = "#2e2d33"  # Geist gray-400 tinted (was #2e2e2e)
-# highlight_high = "#45444a" # Geist gray-500 tinted (was #454545)
-# C 0.006 (whisper):
-highlight_low = "#1a1a1d"  # Geist gray-100 tinted (was #1a1a1a)
-overlay = "#1f1f22"        # Geist gray-200 tinted (was #1f1f1f)
-highlight_med = "#2e2e31"  # Geist gray-400 tinted (was #2e2e2e)
-highlight_high = "#454548" # Geist gray-500 tinted (was #454545)
+highlight_low = "#1a1a1a"  # Geist gray-100 (catppuccin: ~darkened surface0)
+overlay = "#1f1f1f"        # Geist gray-200 (catppuccin: surface0 +21)
+highlight_med = "#2e2e2e"  # Geist gray-400 (catppuccin: surface1 +42→+36)
+highlight_high = "#454545" # Geist gray-500 (catppuccin: surface2 +62→+59)
 
 # --- stock rose pine (main) ---
 muted = "#6e6a86"
@@ -80,10 +66,7 @@ text = "#e0def4"
 love = "#eb6f92"
 gold = "#f6c177"
 rose = "#ebbcba"
-# pine: from Rose Pine MOON variant (main = #31748f, kept in v1; dawn's
-# #286983 is darker still — not a candidate for fixing dimness).
 pine = "#31748f"
-# pine = "#3e8fb0"
 foam = "#9ccfd8"
 iris = "#c4a7e7"
 leaf = "#95b1ac"
