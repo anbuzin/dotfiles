@@ -31,4 +31,11 @@ link "$DOTFILES/config/nvim"     "$HOME/.config/nvim"     "nvim"
 link "$DOTFILES/config/Brewfile" "$HOME/.config/Brewfile" "Brewfile"
 link "$DOTFILES/zsh"             "$HOME/.zsh"             "zsh"
 
+# rose-pine-geist neovim plugin (ghostty/zsh pick it up via the links above)
+link "$DOTFILES/rose-pine-geist/nvim" \
+     "$HOME/.local/share/nvim/site/pack/themes/start/rose-pine-geist" \
+     "rose-pine-geist-nvim"
+
+# Obsidian snippet is separate: rose-pine-geist/install-obsidian.sh
+
 echo "Done. Restart shell or: source ~/.zshrc"

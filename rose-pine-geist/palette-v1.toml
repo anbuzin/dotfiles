@@ -1,0 +1,72 @@
+# rose-pine-geist v1 — FROZEN SNAPSHOT (2026-08-13), not read by build.py.
+# Kept for A/B against palette.toml (v2: pine swapped to Rose Pine moon's).
+# To flip back: cp palette-v1.toml palette.toml && uv run build.py
+# Rose Pine accents on a neutral near-black ground.
+#
+# Role names follow upstream Rose Pine (https://rosepinetheme.com/palette/)
+# so every generated target maps the same role the same way:
+#   base          editor / terminal background
+#   surface       panels, statusline, floats, ANSI black
+#   overlay       popup menus, inputs
+#   highlight_low cursorline / subtle hover
+#   highlight_med visual & terminal selection
+#   highlight_high borders, prominent UI lines
+#
+# Neutral ramp donors:
+#   #101010 Vesper editor.background
+#   #161616 Vesper tab.activeBackground
+#   #1a1a1a Geist dark gray-100
+#   #1f1f1f Geist dark gray-200
+#   #2e2e2e Geist dark gray-400 (Vesper hover #282828, Vesper selection ≈ #333)
+#   #454545 Geist dark gray-500 (Vesper line numbers #505050)
+#   #0d0d0d interpolated (dimmed inactive bg; between Geist bg #0a0a0a and base)
+# Accents + text tones: stock Rose Pine (main variant).
+# Note: text/subtle/muted carry Rose Pine's slight purple tint by design —
+# desaturate here later if they read too warm on the neutral ground.
+
+[meta]
+name = "rose-pine-geist"
+description = "Rose Pine accents on a neutral near-black ground (Vesper/Geist greys)"
+
+[palette]
+# --- neutrals ---
+# Variant A: Vesper/Geist mix (pretty good — kept for A/B)
+# nc = "#0d0d0d"            # interpolated
+# base = "#101010"          # Vesper editor.background
+# surface = "#161616"       # Vesper tab.activeBackground
+# highlight_low = "#1a1a1a" # Geist gray-100
+# overlay = "#1f1f1f"       # Geist gray-200
+# highlight_med = "#2e2e2e" # Geist gray-400
+# highlight_high = "#454545" # Geist gray-500
+
+# Variant B: pure Geist dark, Geist-flat laddering
+# nc = "#000000"             # Geist background-200
+# base = "#0a0a0a"           # Geist background-100
+# surface = "#1a1a1a"        # Geist gray-100
+# highlight_low = "#1f1f1f"  # Geist gray-200
+# overlay = "#292929"        # Geist gray-300
+# highlight_med = "#2e2e2e"  # Geist gray-400
+# highlight_high = "#454545" # Geist gray-500
+
+# Variant C (active): Geist colors, catppuccin-style layering.
+# Secondary surfaces recede BELOW the editor (crust/mantle < base),
+# interactive states rise above it (surface0/1/2 analogs).
+nc = "#000000"             # Geist background-200 (catppuccin: mantle)
+surface = "#000000"        # Geist background-200 (catppuccin: mantle — floats/statusline darker than editor)
+base = "#0a0a0a"           # Geist background-100 (catppuccin: base)
+highlight_low = "#1a1a1a"  # Geist gray-100 (catppuccin: ~darkened surface0)
+overlay = "#1f1f1f"        # Geist gray-200 (catppuccin: surface0 +21)
+highlight_med = "#2e2e2e"  # Geist gray-400 (catppuccin: surface1 +42→+36)
+highlight_high = "#454545" # Geist gray-500 (catppuccin: surface2 +62→+59)
+
+# --- stock rose pine (main) ---
+muted = "#6e6a86"
+subtle = "#908caa"
+text = "#e0def4"
+love = "#eb6f92"
+gold = "#f6c177"
+rose = "#ebbcba"
+pine = "#31748f"
+foam = "#9ccfd8"
+iris = "#c4a7e7"
+leaf = "#95b1ac"

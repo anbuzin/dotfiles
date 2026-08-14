@@ -48,9 +48,8 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
-theme = Catppuccin Mocha
+theme = rose-pine-geist
 unfocused-split-opacity=0.9
-background = #141414
 font-size = 12
 
 keybind = shift+enter=text:\x1b\r
