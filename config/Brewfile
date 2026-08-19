@@ -46,3 +46,5 @@ brew "utf8proc"
 
 brew "temporal"
 brew "vercel"
+brew "herdr"
+brew "ollama"
