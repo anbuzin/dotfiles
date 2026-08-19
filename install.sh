@@ -31,6 +31,11 @@ link "$DOTFILES/config/nvim"     "$HOME/.config/nvim"     "nvim"
 link "$DOTFILES/config/Brewfile" "$HOME/.config/Brewfile" "Brewfile"
 link "$DOTFILES/zsh"             "$HOME/.zsh"             "zsh"
 
+# Link only the config; herdr keeps runtime files alongside it.
+link "$DOTFILES/rose-pine-geist/herdr/config.toml" \
+     "$HOME/.config/herdr/config.toml" \
+     "herdr-config.toml"
+
 # rose-pine-geist neovim plugin (ghostty/zsh pick it up via the links above)
 link "$DOTFILES/rose-pine-geist/nvim" \
      "$HOME/.local/share/nvim/site/pack/themes/start/rose-pine-geist" \

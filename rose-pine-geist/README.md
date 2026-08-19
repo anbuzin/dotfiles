@@ -13,7 +13,9 @@ uv run build.py
 ```
 
 Generated targets: `nvim/lua/rose-pine-geist/palette.lua`, `ghostty/themes/`,
-`zsh/` (highlighting + prompt vars), `obsidian/` (code-block CSS snippet).
+`zsh/` (highlighting + prompt vars), `herdr/config.toml` (whole config file —
+herdr has no separate theme files, so non-theme settings are templated in
+`build_herdr()`), `obsidian/` (code-block CSS snippet).
 Hand-written: `nvim/colors/rose-pine-geist.lua` (thin wrapper over
 `rose-pine/neovim`'s documented palette override — all highlight-group
 mappings come from upstream).
@@ -57,6 +59,9 @@ Generated files are committed, so `uv` is only needed for tweaking. Details:
 - **zsh**: `zshrc` sources `zsh/rose-pine-geist-prompt.zsh` (exports `$RPG_*`
   vars, used by `PS1`) and `zsh/rose-pine-geist-highlighting.zsh` (must load
   before zsh-syntax-highlighting).
+- **herdr**: `~/.config/herdr/config.toml` symlinked to `herdr/config.toml`
+  (base `rose-pine` theme + palette-driven `[theme.custom]` overrides; herdr
+  chrome only — panes inherit ghostty). Reload: `herdr server reload-config`.
 - **obsidian**: `obsidian/rose-pine-geist-code.css` copied to
   `~/vaults/main/.obsidian/snippets/`, enabled in Settings → Appearance →
   CSS snippets. Overrides `--code-*` vars in dark mode only. Re-copy after
@@ -66,6 +71,7 @@ Generated files are committed, so `uv` is only needed for tweaking. Details:
 
 Edit `palette.toml`, run `uv run build.py`, then `:colorscheme
 rose-pine-geist` in nvim (the wrapper busts lua caches), cmd+shift+comma in
-ghostty, `source ~/.zshrc` for the shell. `:Inspect` shows the highlight
+ghostty, `source ~/.zshrc` for the shell, `herdr server reload-config` for
+herdr. `:Inspect` shows the highlight
 group under the cursor. Surgical per-group overrides go in
 `highlight_groups` in `nvim/colors/rose-pine-geist.lua`.

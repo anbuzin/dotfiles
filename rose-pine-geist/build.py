@@ -203,6 +203,36 @@ def build_zsh_prompt(p: dict[str, str]) -> str:
     return "\n".join(lines)
 
 
+# Keep Herdr's stock Rose Pine colors and replace only its background ladder.
+HERDR_TOKENS = [
+    ("panel_bg", "highlight_low"),
+    ("surface0", "highlight_med"),
+    ("surface1", "highlight_high"),
+    ("surface_dim", "highlight_high"),
+]
+
+
+def build_herdr(p: dict[str, str]) -> str:
+    lines = [
+        f"# {HEADER}",
+        "# Apply with: herdr server reload-config",
+        "",
+        "[theme]",
+        'name = "rose-pine"',
+        "auto_switch = false",
+        "",
+        "[theme.custom]",
+    ]
+    lines += [f'{k} = "{p[role]}"' for k, role in HERDR_TOKENS]
+    lines += [
+        "",
+        "[ui]",
+        'agent_panel_sort = "spaces"',
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def build_obsidian(p: dict[str, str]) -> str:
     # Obsidian exposes code-block colors as --code-* variables that both
     # the editor and reading view respect. The two selectors outrank
@@ -250,6 +280,7 @@ def main() -> None:
         "zsh/rose-pine-geist-highlighting.zsh": build_zsh_highlighting(palette),
         "zsh/rose-pine-geist-prompt.zsh": build_zsh_prompt(palette),
         "zsh/rose-pine-geist-fzf.zsh": build_zsh_fzf(palette),
+        "herdr/config.toml": build_herdr(palette),
         "obsidian/rose-pine-geist-code.css": build_obsidian(palette),
     }
     for rel, content in targets.items():
