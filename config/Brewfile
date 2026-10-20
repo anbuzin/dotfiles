@@ -48,3 +48,5 @@ brew "vercel"
 brew "ollama"
 cask "ngrok"
 brew "agent-browser"
+
+cask "raycast"
