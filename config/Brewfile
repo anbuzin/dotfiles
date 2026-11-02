@@ -34,9 +34,6 @@ cask "codex"
 
 cask "secretive"
 
-tap "anomalyco/tap", trusted: true
-brew "anomalyco/tap/opencode"
-
 brew "cmake"
 brew "ffmpeg"
 brew "gnutls"
@@ -50,3 +47,10 @@ cask "ngrok"
 brew "agent-browser"
 
 cask "raycast"
+brew "lima"
+brew "pi-coding-agent"
+
+brew "colima"
+brew "docker"
+brew "docker-compose"
+brew "docker-credential-helper"
